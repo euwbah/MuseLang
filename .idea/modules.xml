@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MuseLang.iml" filepath="$PROJECT_DIR$/MuseLang.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../RichTextFX/RichTextFX.iml" filepath="$PROJECT_DIR$/../RichTextFX/RichTextFX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../RichTextFX/richtextfx/richtextfx.iml" filepath="$PROJECT_DIR$/../RichTextFX/richtextfx/richtextfx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../RichTextFX/richtextfx-demos/richtextfx-demos.iml" filepath="$PROJECT_DIR$/../RichTextFX/richtextfx-demos/richtextfx-demos.iml" />
     </modules>
   </component>
 </project>

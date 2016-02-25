@@ -1,9 +1,19 @@
-import javax.swing.*;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import org.fxmisc.richtext.CodeArea;
 
-/**
- * Created by Matthew_Tan on 2/24/2016.
- */
-public class MuseLangEnvironment {
-    private JTextPane textPane1;
-    private JPanel panel1;
+import java.util.Timer;
+
+public class MuseLangEnvironment extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private CodeArea codeArea;
+
+    @Override
+    public void start(Stage primaryStage) {
+
+    }
 }

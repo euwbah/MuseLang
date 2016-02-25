@@ -19,7 +19,7 @@ Wulfcode.
 Here are some of my brainstorms, TODOs and other thoughts while I code this behemoth (at least it is to me...)
 
 Platform:
-Java Swing for GUI
+Java FX for GUI
 javax.sound.midi for MIDI
 (Hopefully I can create my out simple code highlighter/indenter thingy so I don't have to learn more APIs :P)
 
