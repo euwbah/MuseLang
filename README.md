@@ -22,9 +22,36 @@ Platform:
 Java FX for GUI
 javax.sound.midi for MIDI
 (Hopefully I can create my out simple code highlighter/indenter thingy so I don't have to learn more APIs :P)
+(oh wait yes I can!) 
 
 Current Thoughts:
 Syntax
 Code Highlighting
-How to get this swing thingy to actually work out
+How to get this FX thingy to actually work out
 
+Design: currently only two code areas. One editable, the other is a console.
+
+Syntax style: 
+Whitespace are all equal 
+Lexing and parsing based on function argument count 
+Very basic language, no 'fundemental' type classes 
+
+##Tokens: 
+###Initial tokens
+linkport 
+listports 
+chd 
+def
+Midi Target - <portname>:channel 
+
+###Pattern
+NotePattern \......\ 
+ParamPattern ~\.....\ 
+GroupEach (....)
+GroupWhole [...]
+GroupSync {...}
+SuffixFunc 
+
+###
+
+Example: 
