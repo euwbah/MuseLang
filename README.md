@@ -38,19 +38,19 @@ Very basic language, no 'fundemental' type classes
 
 ##Tokens: 
 ###Initial tokens
-linkport 
-listports 
-chd 
-def
-Midi Target - <portname>:channel 
+- linkport 
+- listports 
+- chd 
+- def
+- Midi Target - `<portname>:channel` 
 
 ###Pattern
-NotePattern \......\ 
-ParamPattern ~\.....\ 
-GroupEach (....)
-GroupWhole [...]
-GroupSync {...}
-SuffixFunc 
+- NotePattern `\......\` 
+- ParamPattern `~\.....\`
+- GroupEach `(....)`
+- GroupWhole `[...]`
+- GroupSync `{...}`
+- SuffixFunc 
 
 ###
 
