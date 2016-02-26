@@ -1,23 +1,16 @@
 import javafx.application.Application;
-import javafx.geometry.Insets;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.*;
 
-import javax.xml.soap.Node;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Timer;
-import java.util.regex.Matcher;
 
 public class MuseLangEnvironment extends Application {
 
@@ -30,13 +23,23 @@ public class MuseLangEnvironment extends Application {
 
     private StyleSpansBuilder<Collection<String>> styleSpansBuilder;
 
+    private EventHandler<KeyEvent> keyEventHandler = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+            if(event.isAltDown() && event.getCode() == KeyCode.R) {
+                evalCode();
+                event.consume();
+            }
+        }
+    };
+
     @Override
     public void start(Stage primaryStage) {
 
         codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
 
-        codeArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4)");
+        codeArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0)");
 
         console = new StyleClassedTextArea();
         console.setEditable(false);
@@ -44,11 +47,9 @@ public class MuseLangEnvironment extends Application {
         console.setStyle("-fx-background-color: rgba(0, 0, 0, 1)");
 
         codeArea.richChanges().subscribe(change -> {
-            int charposition = change.getPosition();//Use this
+            
         });
-
-        codeArea.getSelection().getStart();//use this
-        codeArea.getSelection().getEnd();//use this
+        //codeArea.setStyleClass(from, to, "css style class");//use this
 
 
         SplitPane splitPane = new SplitPane();
@@ -75,13 +76,14 @@ public class MuseLangEnvironment extends Application {
         primaryStage.show();
     }
 
-    private void startStylingFrom(int charCount, StyleSpansBuilder<Collection<String>> spansBuilder) {
-        spansBuilder.add(Collections.emptyList(), charCount);
-    }
-    private void styleAs(String cssStyleClass, StyleSpansBuilder<Collection<String>> spansBuilder, int forHowManyChars) {
-        spansBuilder.add(Collections.singleton(cssStyleClass), forHowManyChars);
-    }
-    private StyleSpans<Collection<String>> createStyle(StyleSpansBuilder<Collection<String>> spansBuilder) {
-        return spansBuilder.create();
+    private void evalCode() {
+        if(codeArea.getSelection() == null) {
+            //Just the caret
+            codeArea.getCaretPosition();
+        }
+        else {
+            //Has selection
+            codeArea.getSelection();
+        }
     }
 }

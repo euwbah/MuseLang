@@ -1,14 +1,10 @@
 package tokens;
 
 public class KeywordToken extends Token {
+    public boolean isInit;
 
-    public KeywordType keywordType;
+    public KeywordToken(String str) {
+        this.str = str;
 
-    public KeywordToken(KeywordType keywordType) {
-        this.keywordType = keywordType;
-    }
-
-    public enum KeywordType {
-        BPM, SIG, LINKPORT, LISTPORTS, CHD
     }
 }
