@@ -12,17 +12,15 @@ Herein lies my attempt to create one for the Musician instead.
 (Also I do know Sonic Pi exists, but it's technically not 'for the Musician' either, as it doesn't support MIDI
 out of the box.)
 
-Inspired by the robustness of Tidal's patterns, the simplicity of Sonic Pi, and the straightforwardness of
-Wulfcode.
+Inspired by the robustness of Tidal's patterns, the simplicity of Sonic Pi, the straightforwardness of
+Wulfcode, and the elegance of a lisp.
 
 
 Here are some of my brainstorms, TODOs and other thoughts while I code this behemoth (at least it is to me...)
 
-Platform:
+Platforms:
 Java FX for GUI
 javax.sound.midi for MIDI
-(Hopefully I can create my out simple code highlighter/indenter thingy so I don't have to learn more APIs :P)
-(oh wait yes I can!) 
 
 ###Current Thoughts:
 - Syntax
@@ -31,60 +29,32 @@ javax.sound.midi for MIDI
 
 ###Design: 
 currently only two code areas. One editable, the other is a console.
+remember to do file IO, and basic undo/redo.
 
-###Syntax ideas: 
-Whitespace are all equal 
-Lexing and parsing based on function argument count only 
-Very basic scripting language
+###Syntax ideas:
+Lisp
 
 Alt + R to run at caret.
-When interpreting, move backwards until a possible Initial Token is found,
-and move forwards until just before the whitespace before the next Initial Token.
-Use that range as the code to execute.
-Use the same range for syntax highlighting on CodeArea change.
+If no selection, evaluate entire contents of outermost parenthesis which the caret is in.
+If selection exists, evaluate outermost parenthesis
 
-When a selection exists instead, check if the first word is a possible Initial Token,
-if not, extend the selection backwards until the first possible Initial Token.
-Similarly, check if the last word lies just before another Initial Token (excluding Whitespace),
-if not, extend the selection forwards until just before the whitespace before the next Init Token.
+#The Core
+The heart of Patterns are units.
+A Unit is simply a value with a given start time.
 
-##Tokens: 
-###Initial tokens (Basically the beginning of the context used when lexing, anything before doesn't affect the context of what's to come)
+
+
+#Syntax
+
+##Native Functions: 
 - `linkport` 
 - `listports` 
 - `chd` 
 - `defsuffixfunc`
 - `bpm`
 - `sig`
-- Midi Target - `<portname> channel` 
-- Identifiers
 
-###Expression tokens:
-- Unary Negative (only initial)
-- Plus
-- Minus
-- Multiply
-- Divide
-- Power
-
-###Main Syntax Tokens:
-- Open/Close Parenthesis (the normal ones)
-- Open/Close Brackets [The squarey ones]
-- Open/Close Braces {The really weird ones}
-- Whitespace
-
-###Pattern tokens:
-- NotePatternBeginToken `\....`
-- NotePatternEnd `...\`
-- ParamPattern Begin/End Token
-- GroupEach Begin/End Token - in context of a pattern
-- GroupWhole BeginEnd Token - ditto
-- GroupSync Begin/End Token - ditto
-- SuffixFuncToken - ditto as well
-- NoteToken
-- ParamToken
-
-##Lexing/Parsing:
+##Parsing:
 ###Pattern
 - NotePattern `\......\` 
 - ParamPattern `~\.....\`
@@ -93,14 +63,23 @@ if not, extend the selection forwards until just before the whitespace before th
 - GroupSync `{...}`
 - SuffixFunc 
 
-###Expression
-- X + Y
+##Code Example: 
+```
+(bpm 120)//set bpm to 120
+(sig 4)//set 4 beats in a bar
 
-Example: 
-`
-bpm 120
-sig 4
+(linkport loopbe "LoopBe Internal MIDI")//link identifier loopbe to a midi port
 
-linkport "LoopBe Internal MIDI" LB
-LB 1 \c4 c4 c4 c4\
-`
+//send pattern a c4 with 30%-50% of absolute note length and 80% of absolute velocity
+//a eb4 with absolute velocity of 86/127, a d4 and a 50% of absolute chance of a eb4.
+//Finally, set the absolute velocity to 64-76 for MidiSends without an
+//existing absolute, repeat whatever I said four times over, then set the absolute probability to 95%
+//for all the notes without an existing absolute probability. Do a final multiply
+//of velocity using a parampattern which has 50% chance of alternating between
+//0.6 and 0.8 every 2 bars, then mirror the entire pattern. Then play it once
+//only, at the first instance of (ticks MOD 16 * PPQ == 0) immediately after the eval.
+
+(updateChangesEvery 16 0)//every 16th beat, 0 offset.
+(loopbe 1 \[c4l(r 0.3 0.5)v0.8 eb4v'86 d4 eb4p0.5]v'(r 64 76)*4p'95\
+        (velocity ~\0.6 | 0.8p0.5\ (extend 2)) (mirror) (once))
+```
