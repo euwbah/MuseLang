@@ -40,7 +40,10 @@ public class Balancer {
                     context = Contexts.MAIN;
             }
             else if (s.equals("\\")) {
-
+                if(context == Contexts.MAIN) {
+                    context == Contexts.PATTERN; 
+                }
+                   
             }
         }
     }
