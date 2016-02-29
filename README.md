@@ -54,16 +54,23 @@ As for timing, patterns are separated by bars using the pipe character | as the 
 Each bar will take an equal time to complete based on the bpm and timesig.
 Each unit of a pattern will take an equal amount of time.
 That is to say, in the pattern:
+
 `\a a {a a} (a a [a a al4*2]l0.5 a)v(rnd 0.5 0.8) | bl4 \`
+
 The time span of the first 'a' is equal to an eleventh of the time span of one bar.
 
 However, there is an exception. Examining the following pattern:
+
 `\al'3.5 ahp0.5 ahp0.8\`
+
 Assuming that the timesig is set to 4 beats a bar,
 the first 'a' _must_ take up the span of 3.5 beats. So, the last two a's will have 0.5 beats to share,
 so each 'a' will have 0.25 beats each.
+
 And another example:
+
 `\al'1 a a al'2 al2\`
+
 Assuming that one bar has 4 beats again. In this case, the first a must be 1 beat long, and 
 the fourth a must be 2 beats long. The fifth then has a length multiplier of two, so it should
 take twice as long as however long the length of a generic 'a'. In this case, four, not three 
@@ -78,7 +85,9 @@ length of a unit in a pattern is this:
 - Finally apply the relative time multipliers to generic units.
 
 However, an issue can easily arise in such a case as this:
+
 `\al'4 al'3 a al2 a | al'3 a ac0.5 \`
+
 Assuming that one bar has 4 beats _again..._ The whole 4 beats has been taken up by the first 'a'.
 And another extra 3 has been taken by the second 'a'.
 In such a case, treat the absolute time no longer as an absolute time, but a relative time.
