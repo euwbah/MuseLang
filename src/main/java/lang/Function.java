@@ -1,6 +1,6 @@
 package lang;
 
-public class Function extends MuseObject{
+public class Function extends LangEntity {
     public int argumentCount;
 
 }

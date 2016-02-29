@@ -39,12 +39,27 @@ If no selection, evaluate entire contents of outermost parenthesis which the car
 If selection exists, evaluate outermost parenthesis
 
 #The Core
-The heart of Patterns are units.
+###The heart of Patterns are units.
 A Unit is simply a value with a given start time.
+Both units and patterns share the same Class.
+They both have the same set of modifiers.
+They _are_ the same, just that Patterns contain units, or perhaps more patterns.
 
+###Here is the hard part:
+Scheduling a pattern.
+As of yet, MuseLang's patterns are scheduled spontaneously.
+However, this may change in the future when note offset becomes a thing.
 
 
 #Syntax
+
+Syntax is mainly split into two types
+- Pattern Syntax - A non-extensible pattern-returning literal
+- Main Syntax - Something that looks like lisp, but is actually an OOP.
+
+##Pattern Syntax:
+###Generic Pattern Syntax:
+These encapsulate both NotePatterns and ParamPatterns.
 
 ##Native Functions: 
 - `linkport` 
@@ -80,6 +95,6 @@ A Unit is simply a value with a given start time.
 //only, at the first instance of (ticks MOD 16 * PPQ == 0) immediately after the eval.
 
 (updateChangesEvery 16 0)//every 16th beat, 0 offset.
-(loopbe 1 \[c4l(r 0.3 0.5)v0.8 eb4v'86 d4 eb4p0.5]v'(r 64 76)*4p'95\
+(loopbe 1 \[c4l(range 0.3 0.5)v0.8 eb4v'86 d4 eb4p0.5]v'(r 64 76)*4p'95\
         (velocity ~\0.6 | 0.8p0.5\ (extend 2)) (mirror) (once))
 ```

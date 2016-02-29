@@ -9,6 +9,6 @@ public class MidiSend {
 
     public enum MidiMessageType
     {
-        NOTE_ON, CC
+        NOTE_ON, CC, NOTE_OFF
     }
 }

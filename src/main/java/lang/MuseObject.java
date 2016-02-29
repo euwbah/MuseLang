@@ -1,6 +1,10 @@
 package lang;
 
+public class MuseObject extends LangEntity {
 
-public abstract class MuseObject {
-    public String name;
+    public MuseClass classType;
+
+    public MuseObject(String name) {
+        this.name = name;
+    }
 }

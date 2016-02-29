@@ -3,10 +3,10 @@ package lang;
 import java.util.ArrayList;
 
 public class Globals {
-    public ArrayList<MuseObject> objects;
+    public ArrayList<LangEntity> objects;
 
     public Globals() {
-
+        objects = new ArrayList<>();
     }
 
     public ArrayList<Function> getAllFunctions() {
