@@ -2,10 +2,10 @@ package lang;
 
 import java.util.ArrayList;
 
-public class Globals {
+public class Members {
     public ArrayList<LangEntity> objects;
 
-    public Globals() {
+    public Members() {
         objects = new ArrayList<>();
     }
 

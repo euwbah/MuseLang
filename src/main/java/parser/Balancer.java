@@ -42,6 +42,21 @@ public class Balancer {
         return unclosedBrackets;
     }
 
+    /**
+     * TODO
+     * Returns the index of a string where the most recent zero-depth is reached.
+     * @param code The entire code in the text box
+     * @param caretPos The index of the care
+     * @return
+     */
+    public static int indexOfMostRecentZeroDepth(String code, int caretPos) {
+        String codeUntilCaret = code.substring(0, caretPos);
+        Context initContext = new Context(Context.Contexts.MAIN);
+        int unclosedParenthesisAtCaret = unclosedParenthesisIn(codeUntilCaret, initContext);
+
+        Context ctx = new Context(context);
+    }
+
     private static void applyContext(Context context, String s, String snext, String sprev) {
         if (s.equals("\"")) {
             if (context.context == Context.Contexts.MAIN) {

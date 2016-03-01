@@ -14,7 +14,5 @@ public class Parser {
     public Parser(String entireCode, int caretPos) {
         this.entireCode = entireCode;
         caretStartPos = caretPos;
-
-
     }
 }
