@@ -46,9 +46,11 @@ They both have the same set of modifiers.
 They _are_ the same, just that Patterns contain units, or perhaps more patterns.
 
 ####Here is the hard part:
-Scheduling a pattern.
-As of yet, MuseLang's patterns are scheduled spontaneously.
-However, this may change in the future when note offset becomes a thing.
+Due to the nature of patterns in MuseLang, the timing of pattern units are innately variable.
+
+Here are some possible issues that will arise with this:
+
+####Determining the time span of a unit
 
 As for timing, patterns are separated by bars using the pipe character | as the 'bar lines'.
 Each bar will take an equal time to complete based on the bpm and timesig.
@@ -59,6 +61,8 @@ That is to say, in the pattern:
 
 The time span of the first 'a' is equal to an eleventh of the time span of one bar.
 
+####Determining the time span of a unit, with other absolute-timed units sharing the same bar.
+
 However, there is an exception. Examining the following pattern:
 
 `\al'3.5 ahp0.5 ahp0.8\`
@@ -67,7 +71,7 @@ Assuming that the timesig is set to 4 beats a bar,
 the first 'a' _must_ take up the span of 3.5 beats. So, the last two a's will have 0.5 beats to share,
 so each 'a' will have 0.25 beats each.
 
-And another example:
+####Time span of a unit with modified relative time
 
 `\al'1 a a al'2 al2\`
 
@@ -84,7 +88,7 @@ length of a unit in a pattern is this:
 - Solve for the absolute time of a generic unit by taking remaining time to spare divided by total spans of generic units.
 - Finally apply the relative time multipliers to generic units.
 
-However, an issue can easily arise in such a case as this:
+####Too many beats in a bar
 
 `\al'4 al'3 a al2 a | al'3 a ac0.5 \`
 
@@ -94,6 +98,32 @@ In such a case, treat the absolute time no longer as an absolute time, but a rel
 But still treat the relative time as relative time.
 Now the first bar has a total of 11 units of equal time, but not absolute time.
 Finally, condense the time of the 11 units to make it fit into 4 beats. Now you have undeciplets.
+
+####Too little beats in a bar
+
+`\[al'1.5 al'0.5 | ]*2\`
+
+This Pattern expands to `\al'1.5 al'0.5 | al'1.5 al'0.5\`.
+There is a total of 2 absolute beats in each bar, and no more to fill up the extra 2 beats of space.
+In this case, just fill up that extra 2 beats with nothingness.
+
+####Variable time
+
+`\[al'(rnd 0.5 1) (a a a a)l'(rnd 1 2) a*(rndint 1 2)]\`
+
+As you can see here, real-time variable parameters of units are a very hard thing to accomplish.
+For such a feature to actually work, the `rnd` function needs to be re-evaluated every iteration.
+And because the parameters can even affect the number of units in a pattern, the whole pattern needs to be
+re-evaluated every iteration.
+
+So, although this MuseLang is technically a 'live code', its patterns and their units are completely
+evaluated and scheduled not spontaneously when the time calls for, but at the start of every pattern
+iteration/reiteration.
+
+####Mid-pattern changes
+
+During a pattern eval, the only extra process done is an eval of the pattern itself.
+No need to keep time etc as pattern stamps are all kept in the pattern.
 
 #Syntax
 
