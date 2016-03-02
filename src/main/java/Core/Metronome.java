@@ -1,3 +1,5 @@
+package Core;
+
 public class Metronome {
 
     public final int PPQ = 96;

@@ -103,7 +103,7 @@ Finally, condense the time of the 11 units to make it fit into 4 beats. Now you 
 
 `\[al'1.5 al'0.5 | ]*2\`
 
-This Pattern expands to `\al'1.5 al'0.5 | al'1.5 al'0.5\`.
+This Core.Pattern expands to `\al'1.5 al'0.5 | al'1.5 al'0.5\`.
 There is a total of 2 absolute beats in each bar, and no more to fill up the extra 2 beats of space.
 In this case, just fill up that extra 2 beats with nothingness.
 
@@ -128,11 +128,11 @@ No need to keep time etc as pattern stamps are all kept in the pattern.
 #Syntax
 
 Syntax is mainly split into two types
-- Pattern Syntax - A non-extensible pattern-returning literal
+- Core.Pattern Syntax - A non-extensible pattern-returning literal
 - Main Syntax - Something that looks like lisp, but is actually an OOP.
 
-##Pattern Syntax:
-###Generic Pattern Syntax:
+##Core.Pattern Syntax:
+###Generic Core.Pattern Syntax:
 These encapsulate both NotePatterns and ParamPatterns.
 - 
 
@@ -145,7 +145,7 @@ These encapsulate both NotePatterns and ParamPatterns.
 - `sig`
 
 ##Parsing:
-###Pattern
+###Core.Pattern
 - NotePattern `\......\` 
 - ParamPattern `~\.....\`
 - GroupEach `(....)`

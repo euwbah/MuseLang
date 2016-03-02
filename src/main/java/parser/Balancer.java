@@ -1,7 +1,7 @@
 package parser;
 
 public class Balancer {
-    public static int unclosedParenthesisIn(String code, Context context) {
+    public static DepthAndContext unclosedParenthesisIn(String code, Context context) {
         int unclosedParenthesis = 0;
 
         for(int c = 0; c < code.length(); c++) {
@@ -18,10 +18,10 @@ public class Balancer {
             applyContext(context, s, snext, sprev);
         }
 
-        return unclosedParenthesis;
+        return new DepthAndContext(unclosedParenthesis, context);
     }
 
-    public static int unclosedBracketsIn(String code, Context context) {
+    public static DepthAndContext unclosedBracketsIn(String code, Context context) {
         int unclosedBrackets = 0;
 
         for(int c = 0; c < code.length(); c++) {
@@ -39,22 +39,29 @@ public class Balancer {
             applyContext(context, s, snext, sprev);
         }
 
-        return unclosedBrackets;
+        return new DepthAndContext(unclosedBrackets, context);
     }
 
     /**
      * TODO
-     * Returns the index of a string where the most recent zero-depth is reached.
+     * Returns an indexed substring where zero-depth level is reached.
      * @param code The entire code in the text box
-     * @param caretPos The index of the care
-     * @return
+     * @param caretPos The index of the caret
+     * @return an IndexedCode instance of the zero-depth code. If improperly balanced parenthesis, returns
+     *         the lowest depth code syntactically possible.
      */
-    public static int indexOfMostRecentZeroDepth(String code, int caretPos) {
+    public static IndexedCode getZeroDepthCode(String code, int caretPos) {
         String codeUntilCaret = code.substring(0, caretPos);
-        Context initContext = new Context(Context.Contexts.MAIN);
-        int unclosedParenthesisAtCaret = unclosedParenthesisIn(codeUntilCaret, initContext);
+        DepthAndContext uncParen = unclosedParenthesisIn(codeUntilCaret, new Context(Context.Contexts.MAIN));
+        int unclosedParenthesisAtCaret = uncParen.unclosedDelimeters;
+        Context contextAtCaret = uncParen.context;
 
-        Context ctx = new Context(context);
+        Context currContext = new Context(contextAtCaret);
+
+        for(int i = caretPos; i >= 0; i++) {
+
+        }
+
     }
 
     private static void applyContext(Context context, String s, String snext, String sprev) {
