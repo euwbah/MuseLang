@@ -125,6 +125,27 @@ iteration/reiteration.
 During a pattern eval, the only extra process done is an eval of the pattern itself.
 No need to keep time etc as pattern stamps are all kept in the pattern.
 
+####Tempo Change
+
+During a tempo change, patterns need not be evaluated as the output of pattern evaluation will its custom
+scheduled events in the unit of beats.
+
+####Time Signature Change
+
+*time signature refers to the numerator of a real time signature, as changing the rhythmical denominator
+in this contexts is arbitrary.
+
+During a time signature change code evaluation, the changes will only take place after this current bar has completed.
+This is for obvious musical reasons.
+
+Re-evaluation of Patterns will need to take place as rhythms of its patterns are heavily dependant on time signature
+(aka beats in a bar...), as they are scheduled in the unit of beats. The existing scheduling of notes will be canceled.
+
+In this case, all code must be evaluated as soon as possible, but in advance such that by the end of
+the current bar, all scheduling is complete and can continue naturally until the end of the pattern reaches.
+
+If the current bar is already the end of the pattern, don't make any changes to the scheduling.
+
 #Syntax
 
 Syntax is mainly split into two types
@@ -132,9 +153,7 @@ Syntax is mainly split into two types
 - Main Syntax - Something that looks like lisp, but is actually an OOP.
 
 ##Pattern Syntax:
-###Generic Pattern Syntax:
-These encapsulate both NotePatterns and ParamPatterns.
-- 
+####TODO
 
 ##Native Functions: 
 - `linkport` 
