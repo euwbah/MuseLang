@@ -103,7 +103,7 @@ Finally, condense the time of the 11 units to make it fit into 4 beats. Now you 
 
 `\[al'1.5 al'0.5 | ]*2\`
 
-This Core.Pattern expands to `\al'1.5 al'0.5 | al'1.5 al'0.5\`.
+This Pattern expands to `\al'1.5 al'0.5 | al'1.5 al'0.5\`.
 There is a total of 2 absolute beats in each bar, and no more to fill up the extra 2 beats of space.
 In this case, just fill up that extra 2 beats with nothingness.
 
@@ -125,16 +125,35 @@ iteration/reiteration.
 During a pattern eval, the only extra process done is an eval of the pattern itself.
 No need to keep time etc as pattern stamps are all kept in the pattern.
 
+####Tempo Change
+
+During a tempo change, patterns need not be evaluated as the output of pattern evaluation will its custom
+scheduled events in the unit of beats.
+
+####Time Signature Change
+
+*time signature refers to the numerator of a real time signature, as changing the rhythmical denominator
+in this contexts is arbitrary.
+
+During a time signature change code evaluation, the changes will only take place after this current bar has completed.
+This is for obvious musical reasons.
+
+Re-evaluation of Patterns will need to take place as rhythms of its patterns are heavily dependant on time signature
+(aka beats in a bar...), as they are scheduled in the unit of beats. The existing scheduling of notes will be canceled.
+
+In this case, all code must be evaluated as soon as possible, but in advance such that by the end of
+the current bar, all scheduling is complete and can continue naturally until the end of the pattern reaches.
+
+If the current bar is already the end of the pattern, don't make any changes to the scheduling.
+
 #Syntax
 
 Syntax is mainly split into two types
-- Core.Pattern Syntax - A non-extensible pattern-returning literal
+- Pattern Syntax - A non-extensible pattern-returning literal
 - Main Syntax - Something that looks like lisp, but is actually an OOP.
 
-##Core.Pattern Syntax:
-###Generic Core.Pattern Syntax:
-These encapsulate both NotePatterns and ParamPatterns.
-- 
+##Pattern Syntax:
+####TODO
 
 ##Native Functions: 
 - `linkport` 
@@ -145,7 +164,7 @@ These encapsulate both NotePatterns and ParamPatterns.
 - `sig`
 
 ##Parsing:
-###Core.Pattern
+###Pattern
 - NotePattern `\......\` 
 - ParamPattern `~\.....\`
 - GroupEach `(....)`
