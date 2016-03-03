@@ -29,5 +29,7 @@ public class Parser {
             if(c.context != Context.Contexts.COMMENT)
                 returnable += s;
         }
+
+        return returnable;
     }
 }
