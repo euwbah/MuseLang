@@ -1,4 +1,4 @@
-package parser;
+package parsing;
 
 public class Balancer {
     public static DepthAndContext unclosedParenthesisIn(String code, Context context) {
@@ -44,10 +44,10 @@ public class Balancer {
 
     /**
      * TODO
-     * Returns an indexed substring where zero-depth level is reached.
+     * Returns an indexed substring of where the current depth of caretPos terminates
      * @param code The entire code in the text box
      * @param caretPos The index of the caret
-     * @return an IndexedCode instance of the zero-depth code. If improperly balanced parenthesis, returns
+     * @return Returns an IndexedCode instance of the zero-depth code. If improperly balanced parenthesis, returns
      *         the lowest depth code syntactically possible.
      */
     public static IndexedCode getZeroDepthCode(String code, int caretPos) {
@@ -64,7 +64,14 @@ public class Balancer {
 
     }
 
-    private static void applyContext(Context context, String s, String snext, String sprev) {
+    /**
+     * If applying context backwards, remember to remove comments first!
+     * @param context
+     * @param s
+     * @param snext
+     * @param sprev
+     */
+    public static void applyContext(Context context, String s, String snext, String sprev) {
         if (s.equals("\"")) {
             if (context.context == Context.Contexts.MAIN) {
                 context.context = Context.Contexts.STRING;

@@ -1,4 +1,4 @@
-package parser;
+package parsing;
 
 public class Context {
     public boolean stringDelimiterIsADoubleQuote;

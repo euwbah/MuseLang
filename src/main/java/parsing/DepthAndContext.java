@@ -1,4 +1,4 @@
-package parser;
+package parsing;
 
 /**
  * Created by Matthew_Tan on 3/2/2016.

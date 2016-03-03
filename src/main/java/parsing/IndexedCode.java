@@ -1,4 +1,4 @@
-package parser;
+package parsing;
 
 /**
  * Only intended for temporal use as string indexing will easily be outdated by inserting a char.
