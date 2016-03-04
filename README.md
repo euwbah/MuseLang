@@ -39,7 +39,8 @@ If no selection, evaluate entire contents of outermost parenthesis which the car
 If selection exists, evaluate outermost parenthesis
 
 #The Core
-###The heart of Patterns are units.
+##Patterns
+#####Patterns are made from Units
 A Unit is simply a value with a given start time.
 Both units and patterns share the same Class.
 They both have the same set of modifiers.
@@ -145,6 +146,38 @@ In this case, all code must be evaluated as soon as possible, but in advance suc
 the current bar, all scheduling is complete and can continue naturally until the end of the pattern reaches.
 
 If the current bar is already the end of the pattern, don't make any changes to the scheduling.
+
+##Code
+###Evaluation
+Since MuseLang is a livecoding language, syntax errors will be very common.
+A key feature (or necessity) would be for MuseLang to evaluate only the necessary code
+as intended by the user.
+
+There are two ways the user can specify what code to evaluate:
+
+####Caret Position
+When code is evaluated without a selection, the code evaluated will be the zero-depth code which
+encompasses the caret position.
+
+####Code Selection
+When code is evaluated with a selection, the code evaluated will be the entire selection,
+plus the code before the selection to reach zero-depth, plus the code after the selection to
+reach zero-depth.
+
+####Zero-depth?
+By right, zero-depth are the char indexes in code of where the number of unclosed parenthesis 
+(or whatever grouping delimiter) _should_ be zero. However, a semi-typed function call
+or perhaps an additional bracket somewhere before the caret or selection will cause the actual zero-depth
+to be either the entire code, or just a single unit of depth short from the correct one.
+
+To solve this, do recursive delimiter matching. This is where 'zero-depth' becomes the lowest possible depth
+with a proper matching delimiter.
+
+However, this is a CPU consuming process and cannot be done while being perceived as instantaneous by the user.
+So, this process of parsing will be done 50ms after the last keystroke - where the code is
+split into sections of depth, and the start-end char index range of the zero-depth sections can
+be efficiently iterated through to find which section matches the cursor. The above mentioned process
+and actual parsing, will be done at regular intervals of 400ms, or 200ms after a keystroke. _Hopefully_
 
 #Syntax
 
