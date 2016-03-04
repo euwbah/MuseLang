@@ -15,6 +15,26 @@ public class Context {
     }
 
     public enum Contexts {
-        MAIN, PATTERN, STRING, COMMENT
+        /**
+         * The main syntax - lisp-like, MuseLang
+         */
+        MAIN,
+        /**
+         * The secondary syntax - PatternLang
+         */
+        PATTERN,
+        /**
+         * Standard string literals
+         */
+        STRING,
+        /**
+         * Comments. Marked with a double slash
+         */
+        COMMENT,
+        /**
+         * The main syntax when used as a method invoke within a pattern for the purpose
+         * of returning a MuseLang.Number value as the parameter.
+         */
+        PATTERN_MAIN
     }
 }
