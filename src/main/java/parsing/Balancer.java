@@ -56,7 +56,6 @@ public class Balancer {
         int depthAtCaret = uncParen.unclosedDelimeters;//by depth, I mean unclosed delimiters
         Context contextAtCaret = uncParen.context;
 
-        String codeWithoutComments = Parser.removeComments(code);
         Context currContext = new Context(contextAtCaret);//ditto
         int currDepth = depthAtCaret;
 
@@ -64,9 +63,7 @@ public class Balancer {
 
         //This one moves backwards...
         for(int i = index; i >= 0; i++) {
-            String s = String.valueOf(codeUntilCaret.charAt(i));
-            String snext = i + 1 < codeUntilCaret.length() ? String.valueOf(codeUntilCaret.charAt(i + 1)) : "";
-            String sprev = i - 1 >= 0 ? String.valueOf(codeUntilCaret.charAt(i - 1)) : "";
+            String s = String.valueOf(code.charAt(i));
 
             if(currContext.context == Context.Contexts.MAIN) {
                 if(s.equals("(")) {
@@ -79,7 +76,7 @@ public class Balancer {
                 startIndex = i + 1;
                 break;
             }
-            applyContext(currContext, s, snext, sprev);
+            applyContextBackwards(currContext, code, i);
         }
 
 
@@ -88,25 +85,37 @@ public class Balancer {
     }
 
     /**
-     * If applying context backwards, remember to remove comments first!
+     * FORWARD USE ONLY!
      * @param context The Context instance to store context data.
      * @param s String.valueOf(string.charAt(n))
      * @param snext String.valueOf(string.charAt(n + 1))
      * @param sprev String.valueOf(string.charAt(n - 1))
      */
     public static void applyContext(Context context, String s, String snext, String sprev) {
+
+        //The flags first:
+        if(context.expectingEndOfString) {
+            context.expectingEndOfString = false;
+            context.context = Context.Contexts.MAIN;
+        }
+        if(context.expectingEndOfPattern) {
+            context.expectingEndOfPattern = false;
+            context.context = Context.Contexts.MAIN;
+        }
+
+        //Now the real thing
         if (s.equals("\"")) {
             if (context.context == Context.Contexts.MAIN) {
                 context.context = Context.Contexts.STRING;
                 context.stringDelimiterIsADoubleQuote = true;
             } else if (context.context == Context.Contexts.STRING && context.stringDelimiterIsADoubleQuote && !sprev.equals("\\"))
-                context.context = Context.Contexts.MAIN;
+                context.expectingEndOfString = true;
         } else if (s.equals("\'")) {
             if (context.context == Context.Contexts.MAIN) {
                 context.context = Context.Contexts.STRING;
                 context.stringDelimiterIsADoubleQuote = false;
             } else if (context.context == Context.Contexts.STRING && !context.stringDelimiterIsADoubleQuote && !sprev.equals("\""))
-                context.context = Context.Contexts.MAIN;
+                context.expectingEndOfString = true;
         } else if (s.equals("/") && snext.equals("/")) {
             if (context.context == Context.Contexts.MAIN)
                 context.context = Context.Contexts.COMMENT;
@@ -118,7 +127,79 @@ public class Balancer {
             if(context.context == Context.Contexts.MAIN)
                 context.context = Context.Contexts.PATTERN;
             else if(context.context == Context.Contexts.PATTERN)
-                context.context = Context.Contexts.MAIN;
+                context.expectingEndOfPattern = true;
+        }
+    }
+
+    /**
+     * This only works backwards!!!!
+     * @param context the context instance
+     * @param entireCode the whole code present
+     * @param caretPos the caret position where s = String.valueOf(entireCode.charAt(caretPos));
+     */
+    public static void applyContextBackwards(Context context, String entireCode, int caretPos) {
+        String s = String.valueOf(entireCode.charAt(caretPos));
+        //So far this is not used
+        //String snext = caretPos + 1 < entireCode.length() ? String.valueOf(entireCode.charAt(caretPos + 1)) : "";
+        String sprev = caretPos - 1 >= 0 ? String.valueOf(entireCode.charAt(caretPos - 1)) : "";
+
+        //Check for all the flags and what not...
+        if(context.commentedCharsLeft > 0) {
+            context.commentedCharsLeft--;
+            if(context.commentedCharsLeft == 0)
+                context.context = Context.Contexts.MAIN;//The comment is over
+        }
+        if(context.expectingEndOfString){
+            context.context = Context.Contexts.MAIN;
+            context.expectingEndOfString = false;
+        }
+        if(context.expectingEndOfPattern) {
+            context.context = Context.Contexts.MAIN;
+            context.expectingEndOfPattern = false;
+        }
+
+        //After all the flags are cleared, do this
+        if(context.commentedCharsLeft == 0) {
+            if (s.equals("\"")) {
+                if (context.context == Context.Contexts.MAIN) {
+                    context.context = Context.Contexts.STRING;
+                    context.stringDelimiterIsADoubleQuote = true;
+                } else if (context.context == Context.Contexts.STRING && context.stringDelimiterIsADoubleQuote && !sprev.equals("\\"))
+                    context.expectingEndOfString = true;//Change the next char to a MAIN, cuz this one's still part of the string
+            } else if (s.equals("\'")) {
+                if (context.context == Context.Contexts.MAIN) {
+                    context.context = Context.Contexts.STRING;
+                    context.stringDelimiterIsADoubleQuote = false;
+                } else if (context.context == Context.Contexts.STRING && !context.stringDelimiterIsADoubleQuote && !sprev.equals("\""))
+                    context.expectingEndOfString = true;//Change the next char to a MAIN, cuz this one's still part of the string
+            } else if (s.equals("\n")) {
+
+                int earliestOccuranceOfSingleLineCommentDelimiterAsDistanceFromThisNewLine = -1;//-1 for no comments
+
+                //Loop until the next \n is found. In the process, determine location of comment if any
+                for(int i = caretPos; i >= 0; i--) {
+                    String curr = String.valueOf(entireCode.charAt(i));
+                    String prev = i - 1 >= 0 ? String.valueOf(entireCode.charAt(i - 1)) : "";
+
+                    if(curr.equals("\n"))
+                        break;//Line has been scanned through
+
+                    if(curr.equals("/") && prev.equals("/"))
+                        earliestOccuranceOfSingleLineCommentDelimiterAsDistanceFromThisNewLine = caretPos - i;
+                }
+
+                //Set the comment context flag
+                //If no comments, -1 + 1 will be 0 and will be treated as no comments.
+                context.commentedCharsLeft = earliestOccuranceOfSingleLineCommentDelimiterAsDistanceFromThisNewLine + 1;
+                if(earliestOccuranceOfSingleLineCommentDelimiterAsDistanceFromThisNewLine > 0) {
+                    context.context = Context.Contexts.COMMENT;
+                }
+            } else if (s.equals("\\")) {
+                if (context.context == Context.Contexts.MAIN)
+                    context.context = Context.Contexts.PATTERN;
+                else if (context.context == Context.Contexts.PATTERN)
+                    context.expectingEndOfPattern = true;//Change the next char to a MAIN cuz this one's still part of the Pattern
+            }
         }
     }
 }
